@@ -8,10 +8,10 @@ const adminUserController = new AdminUserController();
 
 router.use(authenticateJwt, isAdmin);
 
-router.get("/users", adminUserController.getUsers);
-router.get("/users/:id", adminUserController.getUser);
-router.post("/users", adminUserController.createUser);
-router.put("/users/:id", adminUserController.updateUser);
-router.delete("/users/:id", adminUserController.deleteUser);
+router.get("/", adminUserController.getUsers);
+router.get("/:id", adminUserController.getUser);
+router.post("/", adminUserController.createUser);
+router.put("/:id", adminUserController.updateUser);
+router.delete("/:id", adminUserController.deleteUser);
 
 export default router;
