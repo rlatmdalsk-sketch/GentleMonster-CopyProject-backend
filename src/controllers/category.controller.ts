@@ -15,7 +15,7 @@ export class CategoryController {
 
     async getCategory(req: Request, res: Response, next: NextFunction) {
         try {
-            const { path } = req.params;
+            const { path } = req.params as { path: string };
             const page = Number(req.query.page) || 1;
             const limit = Number(req.query.limit) || 20;
 
