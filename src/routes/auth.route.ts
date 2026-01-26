@@ -1,11 +1,12 @@
-import { Router } from 'express';
-import { AuthController } from '../controllers/auth.controller';
-import { authenticateJwt } from "../middlewares/auth.middleware";
+import { Router } from "express";
+import { AuthController } from "../controllers/auth.controller";
+import { validateBody } from "../middlewares/validation.middleware";
+import { registerSchema, loginSchema } from "../schemas/auth.schema";
 
 const authRoute = Router();
 const authController = new AuthController();
 
-authRoute.post('/register', authController.register);
-authRoute.post('/login', authController.login);
+authRoute.post("/register", validateBody(registerSchema), authController.register);
+authRoute.post("/login", validateBody(loginSchema), authController.login);
 
 export default authRoute;

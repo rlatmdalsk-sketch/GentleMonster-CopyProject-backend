@@ -1,18 +1,9 @@
 import { HttpException } from "../utils/exception.utils";
 import { prisma } from "../config/prisma";
-
-interface CreateCategoryDto {
-    name: string;
-    path: string;
-}
-
-interface UpdateCategoryDto {
-    name?: string;
-    path?: string;
-}
+import { CreateCategoryInput, UpdateCategoryInput } from "../schemas/admin.category.schema";
 
 export class AdminCategoryService {
-    async createCategory(data: CreateCategoryDto) {
+    async createCategory(data: CreateCategoryInput) {
         const existingCategory = await prisma.category.findUnique({
             where: { path: data.path },
         });
@@ -29,7 +20,7 @@ export class AdminCategoryService {
         });
     }
 
-    async updateCategory(categoryId: number, data: UpdateCategoryDto) {
+    async updateCategory(categoryId: number, data: UpdateCategoryInput) {
         const category = await prisma.category.findUnique({ where: { id: categoryId } });
         if (!category) throw new HttpException(404, "존재하지 않는 카테고리입니다.");
 
@@ -55,7 +46,10 @@ export class AdminCategoryService {
         });
 
         if (productCount > 0) {
-            throw new HttpException(400, "해당 카테고리에 속한 상품이 있어 삭제할 수 없습니다. 상품을 먼저 이동하거나 삭제해주세요.");
+            throw new HttpException(
+                400,
+                "해당 카테고리에 속한 상품이 있어 삭제할 수 없습니다. 상품을 먼저 이동하거나 삭제해주세요.",
+            );
         }
 
         await prisma.category.delete({

@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { AdminUserService } from '../services/admin.user.service';
+import { CreateUserInput, UpdateUserInput } from "../schemas/admin.user.schema";
 
 const adminUserService = new AdminUserService();
 
 export class AdminUserController {
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 10;
+            const page = req.query.page as unknown as number;
+            const limit = req.query.limit as unknown as number;
 
             const result = await adminUserService.getUsers(page, limit);
 
@@ -19,7 +20,8 @@ export class AdminUserController {
 
     async getUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = Number(req.params.id);
+            const userId = req.params.id as unknown as number;
+
             const user = await adminUserService.getUserById(userId);
             res.status(200).json({ data: user });
         } catch (error) {
@@ -29,7 +31,7 @@ export class AdminUserController {
 
     async createUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = await adminUserService.createUser(req.body);
+            const user = await adminUserService.createUser(req.body as CreateUserInput);
             res.status(201).json({ message: '회원 생성 성공', data: user });
         } catch (error) {
             next(error);
@@ -38,8 +40,8 @@ export class AdminUserController {
 
     async updateUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = Number(req.params.id);
-            const user = await adminUserService.updateUser(userId, req.body);
+            const userId = req.params.id as unknown as number;
+            const user = await adminUserService.updateUser(userId, req.body as UpdateUserInput);
             res.status(200).json({ message: '회원 정보 수정 성공', data: user });
         } catch (error) {
             next(error);
@@ -48,7 +50,7 @@ export class AdminUserController {
 
     async deleteUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = Number(req.params.id);
+            const userId = req.params.id as unknown as number;
             const result = await adminUserService.deleteUser(userId);
             res.status(200).json(result);
         } catch (error) {

@@ -3,7 +3,6 @@ import { prisma } from "../config/prisma";
 
 export class CategoryService {
     async getAllCategories() {
-
         return await prisma.category.findMany({
             orderBy: { id: "asc" },
             select: {
