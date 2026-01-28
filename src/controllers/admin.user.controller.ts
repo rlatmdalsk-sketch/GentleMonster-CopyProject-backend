@@ -7,8 +7,8 @@ const adminUserService = new AdminUserService();
 export class AdminUserController {
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const page = req.query.page as unknown as number;
-            const limit = req.query.limit as unknown as number;
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
 
             const result = await adminUserService.getUsers(page, limit);
 
