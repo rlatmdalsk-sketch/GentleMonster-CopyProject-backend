@@ -41,9 +41,9 @@ app.use(validateClientKey);
 app.use("/api/uploads", uploadRoute);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-app.use("/api/admin/user", adminUserRouter);
-app.use("/api/admin/category", adminCategoryRouter);
-app.use("/api/admin/product", adminProductRoute);
+app.use("/api/admin/users", adminUserRouter);
+app.use("/api/admin/categories", adminCategoryRouter);
+app.use("/api/admin/products", adminProductRoute);
 app.use("/categories", categoryRouter);
 app.use("/products", productRouter);
 
