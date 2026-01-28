@@ -1,51 +1,48 @@
 import { z } from "zod";
-import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { registry } from "../config/openApi";
+import { categoryResponseSchema } from "./category.schema";
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 
 extendZodWithOpenApi(z);
 
-const categoryResponseSchema = z.object({
-    id: z.number().openapi({ example: 1 }),
-    name: z.string().openapi({ example: "Sunglasses" }),
-    path: z.string().openapi({ example: "sunglasses" }),
-    createdAt: z.iso.datetime().openapi({ example: "2024-01-01T00:00:00.000Z" }),
-    updatedAt: z.iso.datetime().openapi({ example: "2024-01-01T00:00:00.000Z" }),
+export const categoryIdParamSchema = z.object({
+    id: z.coerce.number().openapi({ example: 1, description: "카테고리 ID" }),
 });
 
 export const createCategorySchema = z.object({
-    name: z.string().min(1).openapi({ example: "Optical" }),
-    path: z.string().min(1).openapi({
-        example: "optical",
-        description: "URL 경로에 사용될 영문 식별자"
-    }),
+    name: z.string().min(1, "이름은 필수입니다.").openapi({ example: "남성복" }),
+    path: z
+        .string()
+        .regex(/^[a-z0-9-]+$/, "영문 소문자, 숫자, 하이픈만 가능합니다.")
+        .openapi({ example: "men-clothing" }),
+    parentId: z
+        .number()
+        .nullable()
+        .optional()
+        .openapi({ example: null, description: "상위 카테고리 ID (없으면 null 또는 생략)" }),
 });
+
+export const updateCategorySchema = z.object({
+    name: z.string().min(1).optional().openapi({ example: "수정된 카테고리명" }),
+    path: z
+        .string()
+        .regex(/^[a-z0-9-]+$/)
+        .optional()
+        .openapi({ example: "modified-path" }),
+    parentId: z.number().nullable().optional().openapi({ example: 2 }),
+});
+
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
-
-export const updateCategorySchema = createCategorySchema.partial();
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
-
-export const categoryIdParamSchema = z.object({
-    id: z.coerce.number().min(1).openapi({
-        param: {
-            name: "id",
-            in: "path",
-            description: "카테고리 ID (숫자)",
-        },
-        example: 1,
-    }),
-});
 
 registry.registerPath({
     method: "post",
     path: "/admin/categories",
-    tags: ["Admin Categories"],
     summary: "카테고리 생성 (관리자)",
+    tags: ["Admin Categories"],
+    security: [{ bearerAuth: [] }],
     request: {
-        body: {
-            content: {
-                "application/json": { schema: createCategorySchema },
-            },
-        },
+        body: { content: { "application/json": { schema: createCategorySchema } } },
     },
     responses: {
         201: {
@@ -59,22 +56,20 @@ registry.registerPath({
                 },
             },
         },
-        409: { description: "이미 존재하는 Path" },
+        409: { description: "경로 중복" },
+        404: { description: "부모 카테고리 없음" },
     },
 });
 
 registry.registerPath({
     method: "put",
     path: "/admin/categories/{id}",
-    tags: ["Admin Categories"],
     summary: "카테고리 수정 (관리자)",
+    tags: ["Admin Categories"],
+    security: [{ bearerAuth: [] }],
     request: {
         params: categoryIdParamSchema,
-        body: {
-            content: {
-                "application/json": { schema: updateCategorySchema },
-            },
-        },
+        body: { content: { "application/json": { schema: updateCategorySchema } } },
     },
     responses: {
         200: {
@@ -88,17 +83,17 @@ registry.registerPath({
                 },
             },
         },
-        404: { description: "존재하지 않는 카테고리 ID" },
-        409: { description: "이미 존재하는 Path로 변경 시도" },
+        409: { description: "경로 중복" },
+        400: { description: "자신을 부모로 설정 불가" },
     },
 });
 
 registry.registerPath({
     method: "delete",
     path: "/admin/categories/{id}",
-    tags: ["Admin Categories"],
     summary: "카테고리 삭제 (관리자)",
-    description: "해당 카테고리에 속한 상품이 없을 경우에만 삭제 가능합니다.",
+    tags: ["Admin Categories"],
+    security: [{ bearerAuth: [] }],
     request: {
         params: categoryIdParamSchema,
     },
@@ -114,7 +109,6 @@ registry.registerPath({
                 },
             },
         },
-        400: { description: "삭제 불가 (해당 카테고리에 상품 존재)" },
-        404: { description: "존재하지 않는 카테고리 ID" },
+        400: { description: "하위 카테고리 또는 상품 존재로 삭제 불가" },
     },
 });

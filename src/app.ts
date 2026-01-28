@@ -12,6 +12,8 @@ import productRouter from "./routes/product.route";
 import { generateOpenApiDocs } from "./config/openApi";
 import { apiReference } from "@scalar/express-api-reference";
 import userRouter from "./routes/user.route";
+import uploadRoute from "./routes/upload.route";
+import adminProductRoute from "./routes/admin.product.route";
 
 const app = express();
 const PORT = process.env.PORT || 4101;
@@ -35,10 +37,13 @@ app.use(
 );
 
 app.use(validateClientKey);
+
+app.use("/api/uploads", uploadRoute);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/admin/user", adminUserRouter);
 app.use("/api/admin/category", adminCategoryRouter);
+app.use("/api/admin/product", adminProductRoute);
 app.use("/categories", categoryRouter);
 app.use("/products", productRouter);
 

@@ -4,76 +4,49 @@ import { registry } from "../config/openApi";
 
 extendZodWithOpenApi(z);
 
-const productImageSchema = z.object({
-    id: z.number().openapi({ example: 101 }),
-    url: z.string().openapi({ example: "https://example.com/image.jpg" }),
-    productId: z.number().openapi({ example: 1 }),
+export const categoryPathParamSchema = z.object({
+    path: z.string().openapi({ example: "clothing", description: "카테고리 경로 (URL Path)" }),
 });
 
-const productSchema = z.object({
+const baseCategorySchema = z.object({
     id: z.number().openapi({ example: 1 }),
-    name: z.string().openapi({ example: "Lilit 01" }),
-    price: z.number().openapi({ example: 269000 }),
-    summary: z.string().openapi({ example: "사각 형태의 블랙 플랫바 선글라스" }),
-    images: z.array(productImageSchema),
+    name: z.string().openapi({ example: "의류" }),
+    path: z.string().openapi({ example: "clothing" }),
+    parentId: z.number().nullable().openapi({ example: null }),
 });
 
-const paginationSchema = z.object({
-    totalProducts: z.number().openapi({ example: 100 }),
-    totalPages: z.number().openapi({ example: 5 }),
-    currentPage: z.number().openapi({ example: 1 }),
-    limit: z.number().openapi({ example: 20 }),
-});
+export type CategoryResponse = z.infer<typeof baseCategorySchema> & {
+    children: CategoryResponse[];
+};
 
-const categorySchema = z.object({
-    id: z.number().openapi({ example: 1 }),
-    name: z.string().openapi({ example: "Sunglasses" }),
-    path: z.string().openapi({ example: "sunglasses" }),
-});
+export const categoryResponseSchema: z.ZodType<CategoryResponse> = baseCategorySchema.extend({
+    children: z.array(z.any())
+        .openapi({
+            type: 'array',
+            items: { $ref: '#/components/schemas/CategoryResponse' }
+        }),
+}).openapi({ title: "CategoryResponse" });
 
-export const categoryParamSchema = z.object({
-    path: z.string().min(1).openapi({
-        param: {
-            name: "path",
-            in: "path",
-            description: "카테고리 경로 (예: sunglasses)",
-        },
-        example: "sunglasses",
-    }),
-});
+export const breadcrumbSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    path: z.string(),
+}).openapi({ title: "Breadcrumb" });
 
-export const categoryQuerySchema = z.object({
-    page: z.coerce.number().min(1).default(1).openapi({
-        param: {
-            name: "page",
-            in: "query",
-            description: "페이지 번호 (기본값: 1)",
-        },
-        example: 1,
-    }),
-    limit: z.coerce.number().min(1).default(20).openapi({
-        param: {
-            name: "limit",
-            in: "query",
-            description: "페이지당 항목 수 (기본값: 20)",
-        },
-        example: 20,
-    }),
-});
+registry.register("CategoryResponse", categoryResponseSchema);
 
 registry.registerPath({
-    method: "get",
-    path: "/categories",
-    tags: ["Category"],
-    summary: "전체 카테고리 목록 조회",
+    method: 'get',
+    path: '/categories',
+    summary: '전체 카테고리 목록 조회',
+    description: '최상위 카테고리부터 하위 카테고리까지 계층형(Tree) 구조로 반환합니다.',
+    tags: ['Categories'],
     responses: {
         200: {
-            description: "성공",
+            description: '조회 성공',
             content: {
-                "application/json": {
-                    schema: z.object({
-                        data: z.array(categorySchema),
-                    }),
+                'application/json': {
+                    schema: z.array(categoryResponseSchema),
                 },
             },
         },
@@ -81,31 +54,26 @@ registry.registerPath({
 });
 
 registry.registerPath({
-    method: "get",
-    path: "/categories/{path}",
-    tags: ["Category"],
-    summary: "카테고리 상세 및 상품 목록 조회",
+    method: 'get',
+    path: '/categories/{path}',
+    summary: '카테고리 상세 및 경로 조회',
+    description: '특정 path의 카테고리 정보와 상위 이동 경로(Breadcrumbs)를 반환합니다.',
+    tags: ['Categories'],
     request: {
-        params: categoryParamSchema,
-        query: categoryQuerySchema,
+        params: categoryPathParamSchema,
     },
     responses: {
         200: {
-            description: "성공",
+            description: '조회 성공',
             content: {
-                "application/json": {
+                'application/json': {
                     schema: z.object({
-                        data: z.object({
-                            categoryInfo: categorySchema,
-                            products: z.array(productSchema),
-                            pagination: paginationSchema,
-                        }),
+                        category: categoryResponseSchema,
+                        breadcrumbs: z.array(breadcrumbSchema),
                     }),
                 },
             },
         },
-        404: {
-            description: "존재하지 않는 카테고리",
-        },
+        404: { description: '존재하지 않는 카테고리' },
     },
 });

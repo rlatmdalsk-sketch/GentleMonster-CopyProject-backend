@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { ProductController } from "../controllers/product.controller";
-import { validateParams } from "../middlewares/validation.middleware";
-import { productParamSchema } from "../schemas/product.schema";
+import { validateParams, validateQuery } from "../middlewares/validation.middleware";
+import { productQuerySchema, productIdParamSchema } from "../schemas/product.schema";
 
 const productRouter = Router();
 const productController = new ProductController();
 
-productRouter.get("/:id", validateParams(productParamSchema), productController.getProduct);
+productRouter.get("/", validateQuery(productQuerySchema), productController.getProducts);
+productRouter.get("/:id", validateParams(productIdParamSchema), productController.getProduct);
 
 export default productRouter;

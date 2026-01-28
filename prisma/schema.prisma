@@ -34,12 +34,19 @@ model User {
 }
 
 model Category {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   name      String
-  path      String    @unique
-  products  Product[]
+  path      String   @unique
+
+  parentId Int?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+
+  products Product[]
+
+  @@unique([parentId, path])
 }
 
 model Product {

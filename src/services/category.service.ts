@@ -1,58 +1,58 @@
-import { HttpException } from "../utils/exception.utils";
 import { prisma } from "../config/prisma";
+import { HttpException } from "../utils/exception.utils";
 
 export class CategoryService {
     async getAllCategories() {
         return await prisma.category.findMany({
-            orderBy: { id: "asc" },
-            select: {
-                id: true,
-                name: true,
-                path: true,
+            where: {
+                parentId: null,
             },
+            include: {
+                children: {
+                    include: {
+                        children: true,
+                    },
+                    orderBy: { id: "asc" },
+                },
+            },
+            orderBy: { id: "asc" },
         });
     }
 
-    async getCategoryByPath(path: string, page: number, limit: number) {
+    async getCategoryByPath(path: string) {
         const category = await prisma.category.findUnique({
-            where: { path },
+            where: { path: path },
+            include: {
+                parent: {
+                    include: {
+                        parent: true,
+                    },
+                },
+                children: true,
+            },
         });
 
         if (!category) {
             throw new HttpException(404, "존재하지 않는 카테고리입니다.");
         }
 
-        const skip = (page - 1) * limit;
+        const breadcrumbs = [];
+        let current: any = category;
 
-        const [totalProducts, products] = await prisma.$transaction([
-            prisma.product.count({
-                where: { categoryId: category.id },
-            }),
-            prisma.product.findMany({
-                where: { categoryId: category.id },
-                skip: skip,
-                take: limit,
-                orderBy: { createdAt: "desc" },
-                include: {
-                    images: {
-                        take: 1,
-                        orderBy: { id: "asc" },
-                    },
-                },
-            }),
-        ]);
+        while (current) {
+            breadcrumbs.unshift({
+                id: current.id,
+                name: current.name,
+                path: current.path,
+            });
+            current = current.parent;
+        }
 
-        const totalPages = Math.ceil(totalProducts / limit);
+        const { parent, ...categoryData } = category;
 
         return {
-            categoryInfo: category,
-            products: products,
-            pagination: {
-                totalProducts,
-                totalPages,
-                currentPage: page,
-                limit,
-            },
+            category: categoryData,
+            breadcrumbs: breadcrumbs,
         };
     }
 }
