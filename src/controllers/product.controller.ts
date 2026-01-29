@@ -6,8 +6,8 @@ const productService = new ProductService();
 export class ProductController {
     async getProducts(req: Request, res: Response, next: NextFunction) {
         try {
-            const page = req.query.page as unknown as number;
-            const limit = req.query.limit as unknown as number;
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 20;
             const category = req.query.category as string | undefined;
             const sort = req.query.sort as "latest" | "lowPrice" | "highPrice";
 
