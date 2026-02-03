@@ -39,7 +39,7 @@ registry.registerPath({
     method: "post",
     path: "/admin/categories",
     summary: "카테고리 생성 (관리자)",
-    tags: ["Admin Categories"],
+    tags: ["Admin/Categories"],
     security: [{ bearerAuth: [] }],
     request: {
         body: { content: { "application/json": { schema: createCategorySchema } } },
@@ -65,7 +65,7 @@ registry.registerPath({
     method: "put",
     path: "/admin/categories/{id}",
     summary: "카테고리 수정 (관리자)",
-    tags: ["Admin Categories"],
+    tags: ["Admin/Categories"],
     security: [{ bearerAuth: [] }],
     request: {
         params: categoryIdParamSchema,
@@ -92,7 +92,7 @@ registry.registerPath({
     method: "delete",
     path: "/admin/categories/{id}",
     summary: "카테고리 삭제 (관리자)",
-    tags: ["Admin Categories"],
+    tags: ["Admin/Categories"],
     security: [{ bearerAuth: [] }],
     request: {
         params: categoryIdParamSchema,

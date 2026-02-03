@@ -82,7 +82,7 @@ export const userQuerySchema = z.object({
 registry.registerPath({
     method: "get",
     path: "/admin/users",
-    tags: ["Admin Users"],
+    tags: ["Admin/Users"],
     summary: "전체 회원 목록 조회 (관리자)",
     request: {
         query: userQuerySchema,
@@ -105,7 +105,7 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/admin/users/{id}",
-    tags: ["Admin Users"],
+    tags: ["Admin/Users"],
     summary: "회원 상세 조회 (관리자)",
     request: {
         params: userIdParamSchema,
@@ -126,7 +126,7 @@ registry.registerPath({
 registry.registerPath({
     method: "post",
     path: "/admin/users",
-    tags: ["Admin Users"],
+    tags: ["Admin/Users"],
     summary: "회원 직접 생성 (관리자)",
     request: {
         body: {
@@ -154,7 +154,7 @@ registry.registerPath({
 registry.registerPath({
     method: "put",
     path: "/admin/users/{id}",
-    tags: ["Admin Users"],
+    tags: ["Admin/Users"],
     summary: "회원 정보 수정 (관리자)",
     request: {
         params: userIdParamSchema,
@@ -183,7 +183,7 @@ registry.registerPath({
 registry.registerPath({
     method: "delete",
     path: "/admin/users/{id}",
-    tags: ["Admin Users"],
+    tags: ["Admin/Users"],
     summary: "회원 삭제 (관리자)",
     request: {
         params: userIdParamSchema,

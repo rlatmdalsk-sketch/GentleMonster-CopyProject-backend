@@ -40,7 +40,7 @@ export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
 registry.registerPath({
     method: "put",
     path: "/users/profile",
-    tags: ["User"],
+    tags: ["Users"],
     summary: "내 정보 수정",
     description: "로그인한 사용자의 프로필 정보를 수정합니다. (이메일, 비밀번호 제외)",
     request: {
@@ -68,7 +68,7 @@ registry.registerPath({
 registry.registerPath({
     method: "put",
     path: "/users/password",
-    tags: ["User"],
+    tags: ["Users"],
     summary: "비밀번호 변경",
     description: "현재 비밀번호를 확인 후, 새로운 비밀번호로 변경합니다.",
     request: {

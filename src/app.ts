@@ -14,6 +14,13 @@ import { apiReference } from "@scalar/express-api-reference";
 import userRouter from "./routes/user.route";
 import uploadRoute from "./routes/upload.route";
 import adminProductRoute from "./routes/admin.product.route";
+import cartRouter from "./routes/cart.route";
+import orderRouter from "./routes/order.route";
+import adminOrderRouter from "./routes/admin.order.route";
+import reviewRouter from "./routes/review.route";
+import adminReviewRouter from "./routes/admin.review.route";
+import inquiryRouter from "./routes/inquiry.route";
+import adminInquiryRouter from "./routes/admin.inquiry.route";
 
 const app = express();
 const PORT = process.env.PORT || 4101;
@@ -43,9 +50,16 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/products", productRouter);
+app.use("/api/cart", cartRouter);
+app.use("/api/orders", orderRouter);
+app.use("/api/reviews", reviewRouter);
+app.use("/api/inquiries", inquiryRouter);
 app.use("/api/admin/users", adminUserRouter);
 app.use("/api/admin/categories", adminCategoryRouter);
 app.use("/api/admin/products", adminProductRoute);
+app.use("/api/admin/orders", adminOrderRouter);
+app.use("/api/admin/reviews", adminReviewRouter);
+app.use("/api/admin/inquiries", adminInquiryRouter);
 
 app.use(errorMiddleware);
 

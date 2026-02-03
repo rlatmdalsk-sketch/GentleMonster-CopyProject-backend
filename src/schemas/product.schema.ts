@@ -59,7 +59,7 @@ export const productIdParamSchema = z.object({
 registry.registerPath({
     method: "get",
     path: "/products",
-    tags: ["Product"],
+    tags: ["Products"],
     summary: "상품 목록 조회",
     description: "카테고리 필터링, 정렬, 페이지네이션을 지원합니다.",
     request: {
@@ -88,7 +88,7 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/products/{id}",
-    tags: ["Product"],
+    tags: ["Products"],
     summary: "상품 상세 조회",
     description: "상품 상세 정보와 카테고리 경로(Breadcrumbs)를 반환합니다.",
     request: {

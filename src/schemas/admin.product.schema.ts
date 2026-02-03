@@ -62,7 +62,7 @@ export const productIdParamSchema = z.object({
 registry.registerPath({
     method: "post",
     path: "/admin/products",
-    tags: ["Admin Products"],
+    tags: ["Admin/Products"],
     summary: "상품 등록 (관리자)",
     description: "이미지 URL 리스트를 포함하여 상품을 등록합니다. (이미지는 /uploads API 선행 필요)",
     security: [{ bearerAuth: [] }],
@@ -90,7 +90,7 @@ registry.registerPath({
 registry.registerPath({
     method: "put",
     path: "/admin/products/{id}",
-    tags: ["Admin Products"],
+    tags: ["Admin/Products"],
     summary: "상품 수정 (관리자)",
     description: "상품 정보를 수정합니다. imageUrls 전달 시 기존 이미지는 삭제되고 새로 연결됩니다.",
     security: [{ bearerAuth: [] }],
@@ -119,7 +119,7 @@ registry.registerPath({
 registry.registerPath({
     method: "delete",
     path: "/admin/products/{id}",
-    tags: ["Admin Products"],
+    tags: ["Admin/Products"],
     summary: "상품 삭제 (관리자)",
     security: [{ bearerAuth: [] }],
     request: {
