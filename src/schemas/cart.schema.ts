@@ -56,3 +56,34 @@ registry.registerPath({
     request: { body: { content: { "application/json": { schema: addToCartSchema } } } },
     responses: { 201: { description: "추가 성공" } },
 });
+
+registry.registerPath({
+    method: "put",
+    path: "/cart/{itemId}",
+    summary: "장바구니 아이템 수량 수정",
+    tags: [OPEN_API_TAG],
+    security: [{ bearerAuth: [] }],
+    request: {
+        params: cartItemIdParamSchema,
+        body: { content: { "application/json": { schema: updateCartItemSchema } } },
+    },
+    responses: {
+        200: { description: "수량 수정 성공" },
+        404: { description: "장바구니 항목 없음" },
+    },
+});
+
+registry.registerPath({
+    method: "delete",
+    path: "/cart/{itemId}",
+    summary: "장바구니 아이템 삭제",
+    tags: [OPEN_API_TAG],
+    security: [{ bearerAuth: [] }],
+    request: {
+        params: cartItemIdParamSchema,
+    },
+    responses: {
+        200: { description: "삭제 성공" },
+        404: { description: "장바구니 항목 없음" },
+    },
+});
