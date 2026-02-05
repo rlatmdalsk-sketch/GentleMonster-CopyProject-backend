@@ -6,10 +6,11 @@ interface GetProductsQuery {
     limit: number;
     category?: string;
     sort: "latest" | "lowPrice" | "highPrice";
+    keyword?: string;
 }
 
 export class ProductService {
-    async getAllProducts({ page, limit, category, sort }: GetProductsQuery) {
+    async getAllProducts({ page, limit, category, sort, keyword }: GetProductsQuery) {
         const skip = (page - 1) * limit;
 
         const whereCondition: any = {};
@@ -27,6 +28,14 @@ export class ProductService {
                     pagination: { total: 0, totalPages: 0, page, limit },
                 };
             }
+        }
+
+        if (keyword) {
+            whereCondition.OR = [
+                { name: { contains: keyword, mode: "insensitive" } },
+                { summary: { contains: keyword, mode: "insensitive" } },
+                { material: { contains: keyword, mode: "insensitive" } },
+            ];
         }
 
         let orderByCondition: any = { createdAt: "desc" };

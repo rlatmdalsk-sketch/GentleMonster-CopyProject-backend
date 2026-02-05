@@ -10,12 +10,14 @@ export class ProductController {
             const limit = Number(req.query.limit) || 20;
             const category = req.query.category as string | undefined;
             const sort = req.query.sort as "latest" | "lowPrice" | "highPrice";
+            const keyword = req.query.keyword as string | undefined;
 
             const result = await productService.getAllProducts({
                 page,
                 limit,
                 category,
                 sort,
+                keyword,
             });
 
             res.status(200).json(result);

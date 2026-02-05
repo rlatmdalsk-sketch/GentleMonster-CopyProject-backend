@@ -47,6 +47,10 @@ export const productQuerySchema = z.object({
         example: "latest",
         description: "정렬 기준 (latest | lowPrice | highPrice)"
     }),
+    keyword: z.string().optional().openapi({
+        example: "Lilit",
+        description: "검색어 (상품명, 요약, 소재 등으로 검색)"
+    }),
 });
 
 export const productIdParamSchema = z.object({
