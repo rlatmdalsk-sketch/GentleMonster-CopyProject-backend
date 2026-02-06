@@ -32,9 +32,9 @@ export class ProductService {
 
         if (keyword) {
             whereCondition.OR = [
-                { name: { contains: keyword, mode: "insensitive" } },
-                { summary: { contains: keyword, mode: "insensitive" } },
-                { material: { contains: keyword, mode: "insensitive" } },
+                { name: { contains: keyword } },
+                { summary: { contains: keyword } },
+                { material: { contains: keyword  } },
             ];
         }
 
