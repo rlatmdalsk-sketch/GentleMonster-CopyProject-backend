@@ -64,7 +64,7 @@ export class UserOrderService {
                 "https://api.tosspayments.com/v1/payments/confirm",
                 {
                     paymentKey: data.paymentKey,
-                    orderId: `order_${order.id}_${Date.now()}`, // 토스 쪽 주문 ID (Unique해야 함)
+                    orderId: order.id,
                     amount: data.amount,
                 },
                 {
