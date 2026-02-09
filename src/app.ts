@@ -21,6 +21,7 @@ import reviewRouter from "./routes/review.route";
 import adminReviewRouter from "./routes/admin.review.route";
 import inquiryRouter from "./routes/inquiry.route";
 import adminInquiryRouter from "./routes/admin.inquiry.route";
+import bookmarkRouter from "./routes/bookmark.route";
 
 const app = express();
 const PORT = process.env.PORT || 4101;
@@ -54,6 +55,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/inquiries", inquiryRouter);
+app.use("/api/bookmarks", bookmarkRouter);
 app.use("/api/admin/users", adminUserRouter);
 app.use("/api/admin/categories", adminCategoryRouter);
 app.use("/api/admin/products", adminProductRoute);

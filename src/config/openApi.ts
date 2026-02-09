@@ -30,6 +30,7 @@ export function generateOpenApiDocs() {
                     "Orders",
                     "Reviews",
                     "Inquiries",
+                    "Bookmarks",
                     "Uploads",
                 ],
             },
