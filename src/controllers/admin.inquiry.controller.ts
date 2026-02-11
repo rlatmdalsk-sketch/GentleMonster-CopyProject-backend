@@ -8,8 +8,14 @@ export class AdminInquiryController {
     // 전체 조회
     async getAllInquiries(req: Request, res: Response, next: NextFunction) {
         try {
-            // 미들웨어 Coercion 적용 가정
-            const query = req.query as unknown as GetAdminInquiryListQuery;
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 20; // 관리자는 20개 기본
+
+            const query = {
+                ...req.query,
+                page,
+                limit,
+            } as unknown as GetAdminInquiryListQuery;
             const result = await inquiryService.getAllInquiries(query);
             res.status(200).json(result);
         } catch (error) {
