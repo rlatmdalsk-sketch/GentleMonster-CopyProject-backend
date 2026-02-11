@@ -25,8 +25,8 @@ export class UserInquiryController {
             const query: GetInquiryListQuery = {
                 page,
                 limit,
-                type: (req.query.type as InquiryType) || "OTHER",
-                status: (req.query.status as InquiryStatus) || "PENDING",
+                type: (req.query.type as InquiryType) || undefined,
+                status: (req.query.status as InquiryStatus) || undefined,
             };
             const result = await inquiryService.getMyInquiries(req.user!.id, query);
             res.status(200).json(result);
