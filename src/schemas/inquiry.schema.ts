@@ -2,20 +2,15 @@ import { z } from "zod";
 import { registry } from "../config/openApi";
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { PaginationQuerySchema, createPaginatedResponseSchema } from "./common.schema";
+import { InquiryStatus, InquiryType } from "@prisma/client";
 
 extendZodWithOpenApi(z);
 
 const OPEN_API_TAG = "Inquiries";
 
 // --- Enums ---
-export const InquiryTypeEnum = z.enum([
-    "DELIVERY",
-    "PRODUCT",
-    "EXCHANGE_RETURN",
-    "MEMBER",
-    "OTHER",
-]);
-export const InquiryStatusEnum = z.enum(["PENDING", "ANSWERED"]);
+export const InquiryTypeEnum = z.enum(InquiryType);
+export const InquiryStatusEnum = z.enum(InquiryStatus);
 
 // --- 파라미터 ---
 export const inquiryIdParamSchema = z.object({
